@@ -1,6 +1,7 @@
 package com.toonystank.armorswap.enums;
 
 import com.toonystank.armorswap.ArmorSwap;
+import com.toonystank.armorswap.utils.ConfigData;
 
 public enum ConfigDataType {
 
@@ -15,30 +16,54 @@ public enum ConfigDataType {
     DISABLE("Disable"),
     WRONG_USAGE("usageError"),
     BYPASS_PERMISSION("Bypass_permission"),
-    BYPASS_ENCHANTMENT("Bypass_enchantment",true),
+    BYPASS_ENCHANTMENT("Bypass_enchantment", true),
     VERSION("Version"),
-    PREFIX("prefix");
+    PREFIX("Prefix");
 
     private final String name;
-    private Boolean value;
+    private final boolean booleanType;
+    private String cachedString;
+    private boolean cachedBoolean;
 
     ConfigDataType(String name) {
         this(name, false);
     }
-    ConfigDataType(String name, Boolean value) {
+
+    ConfigDataType(String name, boolean booleanType) {
         this.name = name;
-        this.value = value;
+        this.booleanType = booleanType;
     }
+
+    public static void refreshCache() {
+        ArmorSwap plugin = ArmorSwap.getPlugin();
+        if (plugin == null || plugin.getConfigData() == null) {
+            return;
+        }
+        ConfigData configData = plugin.getConfigData();
+        for (ConfigDataType type : values()) {
+            if (type.booleanType) {
+                type.cachedBoolean = configData.getBoolean(type.name);
+            } else {
+                type.cachedString = configData.getMessage(type.name);
+            }
+        }
+    }
+
     public String getName() {
         return name;
     }
+
     public String getString() {
-        return ArmorSwap.getPlugin().getConfigData().getMessage(name);
-    }
-    public boolean getBoolean() {
-        if (value = true) {
-            return ArmorSwap.getPlugin().getConfigData().getBoolean(name);
+        if (cachedString == null) {
+            ArmorSwap plugin = ArmorSwap.getPlugin();
+            if (plugin != null && plugin.getConfigData() != null) {
+                cachedString = plugin.getConfigData().getMessage(name);
+            }
         }
-        return false;
+        return cachedString != null ? cachedString : "";
+    }
+
+    public boolean getBoolean() {
+        return booleanType && cachedBoolean;
     }
 }
