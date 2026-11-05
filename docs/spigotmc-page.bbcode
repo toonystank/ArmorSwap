@@ -1,0 +1,128 @@
+[CENTER][IMG]https://files.catbox.moe/7keezl.png[/IMG]
+
+[SIZE=6][B][COLOR=#00b8d4]ARMOR SWAP[/COLOR][/B][/SIZE]
+[SIZE=4][I]Bring Modern Minecraft's Right-Click Armor Swapping — and More — to Every Version[/I][/SIZE]
+[SIZE=3][COLOR=#888888]Supports Minecraft [B]1.8 – 1.21+[/B]  •  Spigot  •  Paper  •  Purpur  •  [B]Folia[/B][/COLOR][/SIZE]
+[COLOR=#cccccc]────────────────────────────────────────────────────────────────────────[/COLOR][/CENTER]
+
+[SIZE=5][B][COLOR=#00b8d4]✦ Why ArmorSwap?[/COLOR][/B][/SIZE]
+Minecraft 1.19.4 introduced right-click armor hot-swapping in vanilla—leaving older servers behind, and stopping short of what players actually want.
+
+[B]ArmorSwap[/B] brings seamless right-click armor and Elytra swapping back to [B]every server version from 1.8 to 1.21+[/B], and goes far beyond vanilla by letting players swap entire armor sets with [B]Armor Stands[/B], swap worn or held gear with [B]Item Frames[/B], equip custom hats with [B]/armorswap head[/B], and toggle swapping per player!
+
+[CENTER][COLOR=#cccccc]────────────────────────────────────────────────────────────────────────[/COLOR][/CENTER]
+
+[SIZE=5][B][COLOR=#00b8d4]✦ Key Features[/COLOR][/B][/SIZE]
+[LIST]
+[*][B]Right-Click Main-Hand Armor & Elytra Swap[/B]
+Right-click while holding any helmet, chestplate, Elytra, leggings, or boots to instantly swap it with the piece you are currently wearing.
+[I]Smart Block Detection:[/I] Right-clicking chests, doors, anvils, furnaces, and other interactable blocks opens them normally unless you are sneaking!
+
+[*][B]Full Armor Stand Swapping (Shift + Right-Click)[/B]
+Sneak and right-click any Armor Stand to swap your entire worn armor set with the stand in a single click! If the Armor Stand has arms, your main-hand items swap too. Automatically respects invisible stands and 1.16+ equipment locks.
+
+[*][B]Item Frame Swapping (Shift + Right-Click)[/B]
+Sneak and right-click an Item Frame to swap your held item with the displayed item—or shift-right-click an armor piece on a frame with an [B]empty hand[/B] to swap it directly with the armor you're wearing! Respects fixed/locked item frames.
+
+[*][B]Hat / Head Command (/armorswap head)[/B]
+Place any held block or item directly onto your helmet slot (and swap your old helmet back into your hand or inventory). Properly handles stacked items by placing a single item on your head.
+
+[*][B]Per-Player Toggle (/armorswap)[/B]
+Players can enable or disable armor swapping for themselves at any time. Preferences are saved automatically via PersistentDataContainer (1.14+) or [FONT=Courier New]playerdata.yml[/FONT] (1.8–1.13).
+
+[*][B]Curse of Binding & Protection Plugin Support[/B]
+Strictly respects [B]Curse of Binding[/B] across all swaps and commands (with an optional config toggle or [FONT=Courier New]armorswap.bypass.enchantment[/FONT] permission). Works seamlessly with [B]WorldGuard[/B], [B]GriefPrevention[/B], [B]Kingdoms[/B], and other region/claim protection plugins.
+
+[*][B]Multi-Version & Folia Native[/B]
+One lightweight JAR runs cleanly from [B]1.8.8 through 1.21.x[/B] with native [B]Folia[/B] regional scheduler support and cached configuration lookups for zero lag.
+[/LIST]
+
+[CENTER][COLOR=#cccccc]────────────────────────────────────────────────────────────────────────[/COLOR][/CENTER]
+
+[SIZE=5][B][COLOR=#00b8d4]✦ In-Game Showcase[/COLOR][/B][/SIZE]
+
+[CENTER][B]Right-Click Main-Hand Armor & Elytra Swap[/B]
+[IMG]https://files.catbox.moe/nuerdu.gif[/IMG]
+
+[B]Full Armor Stand Outfit Swap (Shift + Right-Click)[/B]
+[IMG]https://files.catbox.moe/d4gq8u.gif[/IMG]
+
+[B]Item Frame Held & Empty-Hand Worn Armor Swap (Shift + Right-Click)[/B]
+[IMG]https://files.catbox.moe/2g19zi.gif[/IMG]
+
+[COLOR=#cccccc]────────────────────────────────────────────────────────────────────────[/COLOR][/CENTER]
+
+[SIZE=5][B][COLOR=#00b8d4]✦ Commands & Permissions[/COLOR][/B][/SIZE]
+
+[B]Aliases:[/B] [FONT=Courier New]/armorswap[/FONT], [FONT=Courier New]/armor[/FONT], [FONT=Courier New]/as[/FONT]
+
+[LIST]
+[*][FONT=Courier New][B]/armorswap[/B][/FONT] — Toggle armor swapping on/off for yourself.
+[COLOR=#555555]Permission:[/COLOR] [FONT=Courier New]armorswap.command.use[/FONT]
+
+[*][FONT=Courier New][B]/armorswap head[/B][/FONT] — Swap the item in your main hand with your helmet slot.
+[COLOR=#555555]Permission:[/COLOR] [FONT=Courier New]armorswap.command.head[/FONT]
+
+[*][FONT=Courier New][B]/armorswap reload[/B][/FONT] — Reload [FONT=Courier New]config.yml[/FONT] without restarting.
+[COLOR=#555555]Permission:[/COLOR] [FONT=Courier New]armorswap.command.reload[/FONT]
+
+[*][FONT=Courier New][B]/armorswap help[/B][/FONT] — View the in-game command help menu.
+[/LIST]
+
+[B]Swap & Bypass Permissions (Configurable in [FONT=Courier New]config.yml[/FONT]):[/B]
+[LIST]
+[*][FONT=Courier New]armorswap.swap.mainhand[/FONT] — Allow right-click main-hand armor swapping.
+[*][FONT=Courier New]armorswap.swap.armorstand[/FONT] — Allow Shift + Right-Click Armor Stand swapping.
+[*][FONT=Courier New]armorswap.swap.itemframe[/FONT] — Allow Shift + Right-Click Item Frame swapping.
+[*][FONT=Courier New]armorswap.bypass.enchantment[/FONT] — Allow bypassing Curse of Binding when swapping.
+[/LIST]
+
+[CENTER][COLOR=#cccccc]────────────────────────────────────────────────────────────────────────[/COLOR][/CENTER]
+
+[SIZE=5][B][COLOR=#00b8d4]✦ Configuration (config.yml)[/COLOR][/B][/SIZE]
+[SPOILER="Click to view default config.yml"]
+[CODE]
+# Enable/disable swapping item to armor stand
+Armor_stand_swap: true
+# Permission to use swapping items to armor stand
+Armor_Stand_Swap_Permission: "armorswap.swap.armorstand"
+
+# Enable/disable swapping item in main hand
+Main_hand_swap: true
+# Permission to use swapping items to main hand
+Main_Hand_Swap_Permission: "armorswap.swap.mainhand"
+
+# Enable/Disable swapping item to item frames
+Item_frame_swap: true
+# Permission to use swapping items to item frames
+Item_Frame_Swap_Permission: "armorswap.swap.itemframe"
+
+# Sound to play on swap (automatically falls back on legacy versions)
+Sound: ITEM_ARMOR_EQUIP_TURTLE
+
+# Bypass curse of binding globally
+Bypass_enchantment: false
+
+# Permission to bypass enchantment
+Bypass_permission: "armorswap.bypass.enchantment"
+
+#----------------------------------------------------------------------------------------------------------------
+#                                                 Language
+#----------------------------------------------------------------------------------------------------------------
+# prefix
+Prefix: "&bArmorSwap &7-"
+# when player runs /armorswap
+Enable: "&bArmor swap is now enabled for you"
+Disable: "&bArmor swap is now disabled for you"
+# on wrong usage
+usageError: "&bUse &7/armorswap&b to enable armor swap"
+
+# DO NOT TOUCH
+Version: 1.5.9
+[/CODE]
+[/SPOILER]
+
+[CENTER][COLOR=#cccccc]────────────────────────────────────────────────────────────────────────[/COLOR]
+[SIZE=4][B][COLOR=#00b8d4]✦ Need Help or Support?[/COLOR][/B][/SIZE]
+[SIZE=3]Join our [URL='https://discord.com/invite/HTvuzQQYbU'][B][COLOR=#5865F2]Discord Support Server[/COLOR][/B][/URL] or report bugs on [URL='https://github.com/taggernation/ArmorSwap/issues'][B]GitHub Issues[/B][/URL]!
+If you enjoy [B]ArmorSwap[/B], please consider leaving a [COLOR=#ffaa00][B]★★★★★[/B][/COLOR] review![/SIZE][/CENTER]

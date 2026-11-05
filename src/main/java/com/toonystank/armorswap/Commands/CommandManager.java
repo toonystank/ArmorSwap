@@ -1,99 +1,164 @@
 package com.toonystank.armorswap.Commands;
 
-import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.*;
-import com.toonystank.armorswap.ArmorSwap;
+import com.toonystank.armorswap.Events.ClickEvent;
 import com.toonystank.armorswap.enums.ConfigDataType;
 import com.toonystank.armorswap.utils.ConfigData;
+import com.toonystank.armorswap.utils.PlayerData;
+import com.toonystank.armorswap.utils.VersionSupport;
 import org.bukkit.ChatColor;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Sound;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
 
 import java.io.IOException;
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
-@CommandAlias("Armorswap|armorswap|as")
-public class CommandManager extends BaseCommand {
-  private final String sound = Objects.requireNonNull(ArmorSwap.getPlugin().getConfig().getString("Sound"));
-  private final ConfigData configData;
-  private final Plugin plugin;
+public class CommandManager implements CommandExecutor, TabCompleter {
 
-  public CommandManager(ConfigData configData, Plugin plugin) {
-    this.configData = configData;
-    this.plugin = plugin;
-  }
+    private final ConfigData configData;
+    private final Plugin plugin;
 
-  @Subcommand("reload")
-  @CommandPermission("armorswap.command.reload")
-  @Description("Reloads ArmorSwap plugin")
-  public void onReload(CommandSender sender) throws IOException, InvalidConfigurationException {
-    if (sender instanceof Player player) {
-      configData.reload();
-      player.sendMessage(ConfigDataType.PREFIX.getString() + "" + ChatColor.AQUA + " ArmorSwap is reloaded");
-    } else {
-      plugin.reloadConfig();
-      plugin.getLogger().info(ConfigDataType.PREFIX.getString() + "" + ChatColor.AQUA + " ArmorSwap is reloaded");
+    public CommandManager(ConfigData configData, Plugin plugin) {
+        this.configData = configData;
+        this.plugin = plugin;
     }
-  }
 
-  @Subcommand("head")
-  @CommandPermission("armorswap.command.head")
-  @Description("Get head, since you can't get it irl ;)")
-  public void onHead(CommandSender sender) {
-    if (sender instanceof Player player) {
-      ItemStack itemForHead = player.getInventory().getItemInMainHand();
-      ItemStack itemForHand = player.getInventory().getHelmet();
-      player.getInventory().setHelmet(itemForHead);
-      player.getInventory().setItemInMainHand(itemForHand);
-      player.playSound(player.getLocation(), Sound.valueOf(sound), 1.0F, 1.0F);
-    } else {
-      plugin.getLogger().info( ConfigDataType.PREFIX.getString() + "" + ChatColor.RED + " Must be an player to run this command.");
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (args.length == 0) {
+            onDefault(sender);
+            return true;
+        }
+
+        String sub = args[0].toLowerCase(Locale.ROOT);
+        switch (sub) {
+            case "reload":
+                if (!sender.hasPermission("armorswap.command.reload")) {
+                    sender.sendMessage(ConfigDataType.PREFIX.getString() + " " + ChatColor.RED + "You don't have permission to run this command.");
+                    return true;
+                }
+                onReload(sender);
+                return true;
+            case "head":
+                if (!sender.hasPermission("armorswap.command.head")) {
+                    sender.sendMessage(ConfigDataType.PREFIX.getString() + " " + ChatColor.RED + "You don't have permission to run this command.");
+                    return true;
+                }
+                onHead(sender);
+                return true;
+            case "help":
+                onHelp(sender);
+                return true;
+            default:
+                sender.sendMessage(ConfigDataType.WRONG_USAGE.getString());
+                return true;
+        }
     }
-  }
 
-  @Subcommand("help")
-  @Description("Help command for plugin")
-  public void onHelp(CommandSender sender) {
-    if (sender instanceof Player player) {
-      player.sendMessage(ChatColor.AQUA + "" + ChatColor.RESET + "" + ChatColor.STRIKETHROUGH + "|              |" + "\n" + "\n" + ChatColor.YELLOW + "* /Armorswap reload - Reloads the plugin" + "\n" + "* /Armorswap head - Replace player head with holding item" + "\n" + "\n" + ChatColor.AQUA + "" + ChatColor.RESET + "" + "|              |");
-    } else {
-      plugin.getLogger().info(ChatColor.AQUA + "" + ChatColor.RESET + "" + ChatColor.STRIKETHROUGH + "|              |" + "\n" + "\n" + ChatColor.YELLOW + "* /Armorswap reload - Reloads the plugin" + "\n" + "* /Armorswap head - Replace player head with holding item" + "\n" + "\n" + ChatColor.AQUA + "" + ChatColor.RESET + "" + "|              |");
-    }
-  }
-
-  @Default
-  @CommandPermission("armorswap.command.use")
-  @Description("Enables/Disables armorswap ability.")
-  public void onDefault(CommandSender sender) {
-    if (sender instanceof Player player) {
-      PersistentDataContainer data = player.getPersistentDataContainer();
-      if (!data.has(new NamespacedKey(ArmorSwap.getPlugin(), "ArmorSwapEnabled"), PersistentDataType.INTEGER)) {
-        data.set(new NamespacedKey(ArmorSwap.getPlugin(), "ArmorSwapEnabled"), PersistentDataType.INTEGER, 0);
-      }
-      else {
+    public void onReload(CommandSender sender) {
+        if (configData == null) {
+            return;
+        }
         try {
-          int value = Objects.requireNonNull(data.get(new NamespacedKey(ArmorSwap.getPlugin(), "ArmorSwapEnabled"), PersistentDataType.INTEGER));
-          if (value == 1) {
-            player.sendMessage(ConfigDataType.DISABLE.getString());
-            data.set(new NamespacedKey(ArmorSwap.getPlugin(), "ArmorSwapEnabled"), PersistentDataType.INTEGER, 0);
-          }else {
-            player.sendMessage(ConfigDataType.ENABLE.getString());
-            data.set(new NamespacedKey(ArmorSwap.getPlugin(), "ArmorSwapEnabled"), PersistentDataType.INTEGER, 1);
-          }
+            configData.reload();
+        } catch (IOException | InvalidConfigurationException e) {
+            e.printStackTrace();
+            return;
         }
-        catch (Exception value){
-          System.out.println(value.getMessage());
+        if (sender instanceof Player) {
+            sender.sendMessage(ConfigDataType.PREFIX.getString() + "" + ChatColor.AQUA + " ArmorSwap is reloaded");
+        } else {
+            plugin.getLogger().info(ConfigDataType.PREFIX.getString() + "" + ChatColor.AQUA + " ArmorSwap is reloaded");
         }
-      }
-    } else {
-      plugin.getLogger().info(ConfigDataType.PREFIX.getString() + "" + ChatColor.RED + " Must be an player to run this command.");
     }
-  }
+
+    public void onHead(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            PlayerInventory inv = player.getInventory();
+            ItemStack itemForHead = VersionSupport.getItemInMainHand(player);
+            ItemStack itemForHand = inv.getHelmet();
+            if (VersionSupport.isAir(itemForHead) && VersionSupport.isAir(itemForHand)) {
+                return;
+            }
+            if (!ClickEvent.canMove(itemForHand, player)) {
+                return;
+            }
+            if (!VersionSupport.isAir(itemForHead) && itemForHead.getAmount() > 1) {
+                if (!VersionSupport.isAir(itemForHand) && inv.firstEmpty() == -1) {
+                    player.sendMessage(ChatColor.RED + "Inventory full");
+                    return;
+                }
+                ItemStack single = itemForHead.clone();
+                single.setAmount(1);
+                ItemStack remaining = itemForHead.clone();
+                remaining.setAmount(itemForHead.getAmount() - 1);
+                inv.setHelmet(single);
+                VersionSupport.setItemInMainHand(player, remaining);
+                if (!VersionSupport.isAir(itemForHand)) {
+                    inv.addItem(itemForHand);
+                }
+            } else {
+                inv.setHelmet(VersionSupport.isAir(itemForHead) ? null : itemForHead);
+                VersionSupport.setItemInMainHand(player, VersionSupport.isAir(itemForHand) ? null : itemForHand);
+            }
+            VersionSupport.playSound(player, ConfigDataType.SOUND.getString());
+        } else {
+            plugin.getLogger().info(ConfigDataType.PREFIX.getString() + "" + ChatColor.RED + " Must be an player to run this command.");
+        }
+    }
+
+    public void onHelp(CommandSender sender) {
+        String helpMessage = ChatColor.AQUA + "" + ChatColor.RESET + "" + ChatColor.STRIKETHROUGH + "|              |" + "\n" + "\n" + ChatColor.YELLOW + "* /Armorswap reload - Reloads the plugin" + "\n" + "* /Armorswap head - Replace player head with holding item" + "\n" + "\n" + ChatColor.AQUA + "" + ChatColor.RESET + "" + "|              |";
+        if (sender instanceof Player) {
+            sender.sendMessage(helpMessage);
+        } else {
+            plugin.getLogger().info(helpMessage);
+        }
+    }
+
+    public void onDefault(CommandSender sender) {
+        if (!sender.hasPermission("armorswap.command.use")) {
+            sender.sendMessage(ConfigDataType.PREFIX.getString() + " " + ChatColor.RED + "You don't have permission to run this command.");
+            return;
+        }
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            if (PlayerData.toggle(player)) {
+                player.sendMessage(ConfigDataType.ENABLE.getString());
+            } else {
+                player.sendMessage(ConfigDataType.DISABLE.getString());
+            }
+        } else {
+            plugin.getLogger().info(ConfigDataType.PREFIX.getString() + "" + ChatColor.RED + " Must be an player to run this command.");
+        }
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length != 1) {
+            return Collections.emptyList();
+        }
+        String input = args[0].toLowerCase(Locale.ROOT);
+        List<String> completions = new ArrayList<>();
+        if ("help".startsWith(input)) {
+            completions.add("help");
+        }
+        if ("head".startsWith(input) && sender.hasPermission("armorswap.command.head")) {
+            completions.add("head");
+        }
+        if ("reload".startsWith(input) && sender.hasPermission("armorswap.command.reload")) {
+            completions.add("reload");
+        }
+        return completions;
+    }
 }

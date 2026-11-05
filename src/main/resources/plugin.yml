@@ -1,12 +1,14 @@
 name: ArmorSwap
 version: '${project.version}'
 main: com.toonystank.armorswap.ArmorSwap
-api-version: 1.14
+api-version: 1.13
+folia-supported: true
 authors: [ Edward ]
 description: Simple Armorswap plugin. Swap armor by right clicking
 website: https://taggernation.com
 softdepend: [ WorldGuard, Kingdoms, GriefPrevention ]
 commands:
   Armorswap:
+    aliases: [ armorswap, as, armor ]
     description: Enable or disable armor swapping
     usage: /<command>
